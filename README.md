@@ -1,6 +1,8 @@
 # twitter-streamer
 This is an application which processes Tweets containing a keyword in real time using Twitter Streaming API.
 
+# code preview
+https://nbviewer.jupyter.org/github/jasleen19/twitter-streamer/blob/master/streamer.ipynb 
 ## pre-requisites
 ### required
 - build essentials
