@@ -1,0 +1,2 @@
+default:
+	./streamer.py
