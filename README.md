@@ -1,6 +1,17 @@
 ## twitter-streamer
 This is an application which processes Tweets containing a keyword in real time using Twitter Streaming API.
 
+## pre-requisites
+### required
+- build essentials
+- python3
+- pip
+- pip : tweepy
+- pip : pprint
+### optional
+- make
+- jupyter
+
 ## build
 Install required packages using `pip install -r requirements.txt`
 
