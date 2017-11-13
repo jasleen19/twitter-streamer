@@ -31,7 +31,7 @@ def printer():
     global tweets, i, keyword
     tweets.append([]) # append (current_minute + 1)s list
     i = i + 1
-    Timer(10.0, printer).start() # called every minute
+    Timer(60.0, printer).start() # called every minute
     if i != 1:
         print("\nUsers who tweeted about {} in last 1 minute:".format(keyword))
         pprint(sum(tweets[-6:-1], []))
