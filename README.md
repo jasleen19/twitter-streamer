@@ -43,3 +43,6 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - streamer saves incoming tweets accordingly
 - since a kafka or some other server is needed to completely exhaust Twitter's streaming API, just ignore exceptions to connection loss
 - reconnect to connection if connection last
+
+## references
+- to be added
