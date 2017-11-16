@@ -44,5 +44,6 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - since a kafka or some other server is needed to completely exhaust Twitter's streaming API, just ignore exceptions to connection loss
 - reconnect to connection if connection last
 
-## references
-- to be added
+## coding references
+- http://docs.tweepy.org/en/v3.5.0/streaming_how_to.html 
+- https://stackoverflow.com/questions/16578652/threading-timer 
