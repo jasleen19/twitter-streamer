@@ -10,7 +10,7 @@ https://nbviewer.jupyter.org/github/jasleen19/twitter-streamer/blob/master/strea
 - python3
 - pip
 - pip : tweepy
-- pip : pprint
+- pip : tabulate
 ### optional
 - make
 - jupyter
@@ -28,7 +28,6 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 ## TO-DO existing
 - remove global variable usage
 - add argument parsing
-- prettify output further
 - segregate class and helper functions
 - maintenance unit tests (removed TDD tests)
 - fix the kernel killed issue in jupyter notebook (has to be restarted, preferrably with output cleared)

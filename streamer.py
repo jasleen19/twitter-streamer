@@ -6,7 +6,7 @@ from tweepy import Stream
 from json import loads
 from threading import Timer
 from http.client import IncompleteRead
-from pprint import pprint
+from tabulate import tabulate
 import os
 
 # StreamListener class to process Twitter stream using Tweepy Stream object
@@ -46,7 +46,7 @@ def printer():
     if i != 1:
         print("\nUsers who tweeted about {} in last {} seconds:".format(keyword,
          duration))
-        pprint(users)
+        print(tabulate([(k, v) for k,v in users.items()] , headers=['Username', 'Tweets']))
         print("\n")
     # empty dictionary every 5 minutes
     if i % duration == 0:
@@ -65,10 +65,10 @@ def main():
     '''main function: initialize tokens, validate them, run printer thread and
      start streaming'''
     # token information, intialize this if empty or use runtime input
-    access_token = ""
-    access_token_secret = ""
     consumer_key = ""
     consumer_secret = ""
+    access_token = ""
+    access_token_secret = ""
 
     # CHECK CREDENTIALS
     if consumer_key == "" or consumer_secret == "" or access_token == "" or \
@@ -78,13 +78,13 @@ def main():
     if consumer_key == "":
         print("Enter consumer key:")
         consumer_key = input()
-    elif consumer_secret == "":
+    if consumer_secret == "":
         print("Enter consumer secret:")
         consumer_secret = input()
-    elif access_token == "":
+    if access_token == "":
         print("Enter access token:")
         access_token = input()
-    elif access_token_secret == "":
+    if access_token_secret == "":
         print("Enter access token secret:")
         access_token_secret = input()
 
