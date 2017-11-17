@@ -48,23 +48,23 @@ class Printer():
     def printer(self):
         '''printer function: run a self-calling throad to be called every 
         60 seconds on the clock (not equivalent to sleep!)'''
-        global i, keyword, duration, minutes
+        global i, keyword, duration, minutes, units
         i = i + 1
-        # called every minute; change value to 10 seconds to test faster
+        # called every minute; change to 10 seconds to test faster
         Timer(duration, self.printer).start()
         # don't call for i = 1 as here i represents the duration [i-1,i] 
         #   which has not finished yet
         if i != 1:
             # create an ordered dict so that slicing is possible
             ordered = dict(OrderedDict(islice(minutes.items(), 
-                max(0,i-int(duration)-1), i-1)))
+                max(0,i-units-1), i-1)))
             merged = {}
-            # merge all the dictionaries of counts for last `duration` 
-            #   minutes
+            # merge all the dictionaries of counts for last `units * duration` 
+            #   seconds
             for j, (k,v) in enumerate(ordered.items()):
                 merged = {**merged, **v}
             print("\nMinute {}: Tweeters about {} in last {} seconds:".format(i-1, 
-                keyword, duration))
+                keyword, int(units * duration)))
             print(tabulate([(k, v) for k,v in merged.items()] , 
                 headers=['Username', 'Count of Tweets']))
 
@@ -73,18 +73,19 @@ class Printer():
 minutes = {}
 i = 0
 # change this to allow printing frequency (float: in seconds)
-duration = 5.0
+duration = 60.0
+# duration units to go back to
+units = 5
 keyword = ""
 
 def main():
     '''main function: initialize tokens, validate them, run printer thread and
      start streaming'''
     # token information, intialize this if empty or use runtime input
-    consumer_key = ""
-    consumer_secret = ""
-    access_token = ""
-    access_token_secret = ""
-
+    consumer_key = "24B1yC80pzW8nkzGHcnRufTYT"
+    consumer_secret = "VDhmKDgw4XO0eNH8QC95bUY84bi5gwQirF1FRhoZ9PoUvoKmyM"
+    access_token = "27220758-9ir6SA0XkrWPF0WHzSiiPljSlmFzb5iYROQ7YLqFv"
+    access_token_secret = "uLMmKd3HnuuolPi71NOdXxZeJNiO3UFzbjRFepK9CzYc7"
 
     # CHECK CREDENTIALS
     if consumer_key == "" or consumer_secret == "" or access_token == "" or \
