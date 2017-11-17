@@ -7,6 +7,8 @@ from json import loads
 from threading import Timer
 from http.client import IncompleteRead
 from tabulate import tabulate
+from collections import OrderedDict
+from itertools import islice
 import os
 
 # StreamListener class to process Twitter stream using Tweepy Stream object
@@ -17,49 +19,62 @@ class StreamListener(StreamListener):
         '''on_data class_method: handle data by loading into a json and
         appending to global repository of tweets,
         based on minute as index'''
-        global users, i
+        global i, minutes
         tweet_json = loads(data)
         if 'user' in tweet_json:
             username = tweet_json['user']['screen_name']
-            # increase count or add user to key and then increase count
-            users[username] = users.get(username, 0) + 1
-            # # debug print
-            # if users[username] == 1:
+            # if minute not in `minutes` dictionary, add it
+            if i not in minutes:
+                minutes[i] = {}
+            # check if username is being tracked in current minute and
+            #   increase count
+            minutes[i][username] = minutes[i].get(username, 0) + 1
+            # debug print
+            # if minutes[i][username] == 1:
             #     print("Minute {}: {} tweeted!".format(i, username))
             # else:
             #     print("Minute {}: {} tweeted AGAIN! Count = {}".format(i,
-            #     username, users[username]))
+            #     username, minutes[i][username]))
         return True
-
+    
     def on_error(self, status):
         '''on_error class_method: handle the errors are most frequently on
         server side/connection related and few, pass them'''
         pass
 
-def printer():
-    '''printer function: run a self-calling throad to be called every 60
-    seconds on the clock (not equivalent to sleep!)'''
-    global users, i, keyword, duration
-    i = i + 1
-    # called every minute; change value to 10 seconds to test faster
-    Timer(duration, printer).start()
-    if i != 1:
-        print("\nUsers who tweeted about {} in last {} seconds:".format(keyword,
-         duration))
-        print(tabulate([(k, v) for k,v in users.items()] , headers=['Username', 'Tweets']))
-        print("\n")
-    # empty dictionary every 5 minutes
-    if i % duration == 0:
-        users = {}
+class Printer():
+    '''Printing class: This class works as a handler for printing every 
+    `duration` seconds'''
+    def printer(self):
+        '''printer function: run a self-calling throad to be called every 
+        60 seconds on the clock (not equivalent to sleep!)'''
+        global i, keyword, duration, minutes
+        i = i + 1
+        # called every minute; change value to 10 seconds to test faster
+        Timer(duration, self.printer).start()
+        # don't call for i = 1 as here i represents the duration [i-1,i] 
+        #   which has not finished yet
+        if i != 1:
+            # create an ordered dict so that slicing is possible
+            ordered = dict(OrderedDict(islice(minutes.items(), 
+                max(0,i-int(duration)-1), i-1)))
+            merged = {}
+            # merge all the dictionaries of counts for last `duration` 
+            #   minutes
+            for j, (k,v) in enumerate(ordered.items()):
+                merged = {**merged, **v}
+            print("\nMinute {}: Tweeters about {} in last {} seconds:".format(i-1, 
+                keyword, duration))
+            print(tabulate([(k, v) for k,v in merged.items()] , 
+                headers=['Username', 'Count of Tweets']))
 
 # GLOBAL VARIABLES DECLARED AND INITIALIZED - need to remove the need to have
 #   global variables
-users = {}
+minutes = {}
 i = 0
+# change this to allow printing frequency (float: in seconds)
+duration = 5.0
 keyword = ""
-# change this parameter to make the printing/storing faster or slower. Default
-#   is 60 seconds
-duration = 60.0
 
 def main():
     '''main function: initialize tokens, validate them, run printer thread and
@@ -69,6 +84,7 @@ def main():
     consumer_secret = ""
     access_token = ""
     access_token_secret = ""
+
 
     # CHECK CREDENTIALS
     if consumer_key == "" or consumer_secret == "" or access_token == "" or \
@@ -100,7 +116,8 @@ def main():
     # START PRINTING
     print("\nConsuming the stream...")
     # THIS WILL BECOME AN INDEPENDENT PROCESS
-    printer()
+    p = Printer()
+    p.printer()
 
     l = StreamListener()
 
