@@ -82,10 +82,10 @@ def main():
     '''main function: initialize tokens, validate them, run printer thread and
      start streaming'''
     # token information, intialize this if empty or use runtime input
-    consumer_key = "24B1yC80pzW8nkzGHcnRufTYT"
-    consumer_secret = "VDhmKDgw4XO0eNH8QC95bUY84bi5gwQirF1FRhoZ9PoUvoKmyM"
-    access_token = "27220758-9ir6SA0XkrWPF0WHzSiiPljSlmFzb5iYROQ7YLqFv"
-    access_token_secret = "uLMmKd3HnuuolPi71NOdXxZeJNiO3UFzbjRFepK9CzYc7"
+    consumer_key = ""
+    consumer_secret = ""
+    access_token = ""
+    access_token_secret = ""
 
     # CHECK CREDENTIALS
     if consumer_key == "" or consumer_secret == "" or access_token == "" or \
