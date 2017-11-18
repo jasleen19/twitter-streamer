@@ -25,16 +25,15 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - `make`
 - `jupyter notebook streamer.ipynb`
 
-## TO-DO existing
+## TO-DO
+### critical
+- Print the total number of links included in the tweets followed by a list of the unique domains sorted by the count. Any shortened links should be expanded
+- Print the number of unique words used in the tweets followed by the list of top 10 words sorted by occurence. Remove the common function words like a, an, the, of, with etc. (articles, pronouns, propositions and conjunctions)
+### improvements
 - remove global variable usage
-- add argument parsing
-- segregate class and helper functions
-- maintenance unit tests (removed TDD tests)
+- add optional argument parsing
 - fix the kernel killed issue in jupyter notebook (has to be restarted, preferrably with output cleared)
-
-## TO-DO future
 - mini data mining and aggregation features
-- maybe use pandas
 
 ## how it works
 - printer.printer() method and main function run in separate threads
