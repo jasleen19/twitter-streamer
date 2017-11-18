@@ -46,8 +46,7 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
   - calls itself every `duration` seconds and is the only one who can update `i`, so that there are no race conditions
   - prints out `durations` dictionary for the last `unit` durations each of `duration` seconds (using OrderedDict's slicing)
   - to achieve the above aggregation, it merges all the dictionaries of last `unit` durations which contain `{ username: counts }` values for each of the last elapsed `units`
-- since a kafka or some other server is needed to completely exhaust Twitter's streaming API, just ignore exceptions to connection loss
-- reconnect to connection if connection last
+- since a kafka or some other server is needed to completely exhaust Twitter's streaming API, it just ignores connection loss exceptions (IncompleteRead) and tries to reconnect indefinitely in a loop
 
 ## coding references
 - http://docs.tweepy.org/en/v3.5.0/streaming_how_to.html 
