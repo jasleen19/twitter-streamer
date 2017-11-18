@@ -37,9 +37,15 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - maybe use pandas
 
 ## how it works
-- printer function and main function run in separate threads
-- main function has the instantiation of streamer class (tweepy) which accesses the global state of tweets data and current minute
-- streamer saves incoming tweets accordingly
+- printer.printer() method and main function run in separate threads
+- main function 
+  - has the instantiation of `StreamListener` class (tweepy) which accesses the global state of tweets data and current minute
+  - `StreamListener` saves incoming tweets according to current global value of `i`
+  - only `StreamListener` can change the value of global variable `durations`, so that there are no race conditions
+- printer.printer() method
+  - calls itself every `duration` seconds and is the only one who can update `i`, so that there are no race conditions
+  - prints out `durations` dictionary for the last `unit` durations each of `duration` seconds (using OrderedDict's slicing)
+  - to achieve the above aggregation, it merges all the dictionaries of last `unit` durations which contain `{ username: counts }` values for each of the last elapsed `units`
 - since a kafka or some other server is needed to completely exhaust Twitter's streaming API, just ignore exceptions to connection loss
 - reconnect to connection if connection last
 
