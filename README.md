@@ -47,3 +47,4 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - http://docs.tweepy.org/en/v3.5.0/streaming_how_to.html 
 - https://stackoverflow.com/questions/16578652/threading-timer 
 - https://stackoverflow.com/a/30975520
+- https://stackoverflow.com/questions/38987/how-to-merge-two-dictionaries-in-a-single-expression
