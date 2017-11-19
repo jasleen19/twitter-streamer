@@ -47,3 +47,7 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - http://docs.tweepy.org/en/v3.5.0/streaming_how_to.html 
 - https://stackoverflow.com/questions/16578652/threading-timer 
 - https://stackoverflow.com/a/30975520
+- https://github.com/john-kurkowski/tldextract
+- https://stackoverflow.com/questions/19130512/stopword-removal-with-nltk
+- https://stackoverflow.com/questions/41610543/corpora-stopwords-not-found-when-import-nltk-library
+- https://stackoverflow.com/questions/24399820/expression-to-remove-url-links-from-twitter-tweet

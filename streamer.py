@@ -10,32 +10,60 @@ from tabulate import tabulate
 from collections import OrderedDict
 from itertools import islice
 import os
+from nltk.corpus import stopwords
+from nltk.tokenize import wordpunct_tokenize
+import tldextract
+import re
+
+# RUN THIS ONCE
+import nltk
+nltk.download('stopwords')
 
 class StreamListener(StreamListener):
     '''StreamListener class: This class works as a handler for the incoming
     Twitter stream using Tweepy object'''
+    stop_words = set(stopwords.words('english'))
+    stop_words.update(['.', ',', '"', "'", '?', '!', ':', ';', '(', ')', '[', ']', '{', '}'])
     def on_data(self, data):
         '''on_data class_method: handle data by loading into a json and
         appending to global repository of tweets,
         based on minute as index'''
-        global i, durations
+        global i, durations, total
+        current_i = i
         tweet_json = loads(data)
         if 'user' in tweet_json:
-            username = tweet_json['user']['screen_name']
             # if minute not in `durations` dictionary, add it
             if i not in durations:
-                durations[i] = {}
-            # check if username is being tracked in current minute and
-            #   increase count
-            durations[i][username] = durations[i].get(username, 0) + 1
-            # debug print
-            # if durations[i][username] == 1:
-            #     print("Minute {}: {} tweeted!".format(i, username))
-            # else:
-            #     print("Minute {}: {} tweeted AGAIN! Count = {}".format(i,
-            #     username, durations[i][username]))
+                durations[i] = {
+                    'users': {},
+                    'domains': {},
+                    'words': {}
+                }
+            # store reporting data
+            self.__update_username(current_i, tweet_json)
+            self.__update_domains(current_i, tweet_json)
+            self.__update_words(current_i, tweet_json)
         return True
     
+    def __update_username(self, current_i, tweet_json):
+        username = tweet_json['user']['screen_name']
+        durations[current_i]['users'][username] = durations[current_i]['users'].get(username, 0) + 1
+        
+    def __update_domains(self, current_i, tweet_json):
+        for url in tweet_json['entities']['urls']:
+            domain_object = tldextract.extract(url['expanded_url'])
+            domain = domain_object.domain
+            durations[current_i]['domains'][domain] = durations[current_i]['domains'].get(domain, 0) + 1
+            
+    def __update_words(self, current_i, tweet_json):
+        text = tweet_json['text']
+        text = re.sub(r"http\S+", "", text)
+        text = re.sub(r'[?|$|.|!]',r'', text)
+        text = re.sub(r'[^a-zA-Z0-9 ]',r'', text)
+        filtered = [i.lower() for i in wordpunct_tokenize(text) if i.lower() not in self.stop_words]
+        for word in filtered:
+            durations[current_i]['words'][word] = durations[current_i]['words'].get(word, 0) + 1
+                                         
     def on_error(self, status):
         '''on_error class_method: handle the errors are most frequently on
         server side/connection related and few, pass them'''
@@ -47,7 +75,7 @@ class Printer():
     def printer(self):
         '''printer function: run a self-calling throad to be called every 
         60 seconds on the clock (not equivalent to sleep!)'''
-        global i, keyword, duration, durations, units
+        global i, keyword, duration, durations, units,domains,total
         i = i + 1
         # called every minute; change to 10 seconds to test faster
         Timer(duration, self.printer).start()
@@ -57,15 +85,27 @@ class Printer():
             # create an ordered dict so that slicing is possible
             ordered = dict(OrderedDict(islice(durations.items(), 
                 max(0,i-units-1), i-1)))
-            merged = {}
+            merged_users = {}
+            merged_domains = {}
+            merged_words = {}
             # merge all the dictionaries of counts for last `units * duration` 
             #   seconds
-            for j, (k,v) in enumerate(ordered.items()):
-                merged = {**merged, **v}
-            print("\nDuration unit {}: Tweeters about {} in last {} seconds:"
+            for k,v in ordered.items():
+                merged_users = {**merged_users, **v['users']}
+                merged_domains = {**merged_domains, **v['domains']}
+                merged_words = {**merged_words, **v['words']}
+            print("\nDuration unit {}: Twitter report for `{}` in last {} seconds:"
                 .format(i-1, keyword, int(min((i-1) * duration, units * duration))))
-            print(tabulate([(k, v) for k,v in merged.items()] , 
+            print("=======================================================================")
+            print(tabulate([(k, v) for k,v in merged_users.items()] , 
                 headers=['Username', 'Count of Tweets']))
+            print("\nTotal number of links: {}\n".format(sum(merged_domains.values())))
+            print(tabulate([(k, merged_domains[k]) for k in sorted(merged_domains, key=merged_domains.get, reverse=True)], 
+                headers=['Domains', 'Count']))
+            print("\nTop 10 words:\n")
+            print(tabulate([(k, merged_words[k]) for k in sorted(merged_words, key=merged_words.get, reverse=True)][:10], 
+                headers=['Words', 'Count']))
+            print("=======================================================================\n")
 
 # GLOBAL VARIABLES DECLARED AND INITIALIZED
 durations = {}
@@ -80,10 +120,10 @@ def main():
     '''main function: initialize tokens, validate them, run printer thread and
      start streaming'''
     # token information, intialize this if empty or use runtime input
-    consumer_key = ""
-    consumer_secret = ""
-    access_token = ""
-    access_token_secret = ""
+    consumer_key = "tMtWT6grkaGMHLH2VxnO33CUX"
+    consumer_secret = "fXjy2dz5pCF1OrHoPhJwlmp7JH2gzsMGP7o6lc3LdF3TO30TCv"
+    access_token = "27220758-9ir6SA0XkrWPF0WHzSiiPljSlmFzb5iYROQ7YLqFv"
+    access_token_secret = "uLMmKd3HnuuolPi71NOdXxZeJNiO3UFzbjRFepK9CzYc7"
 
     # CHECK CREDENTIALS
     if consumer_key == "" or consumer_secret == "" or access_token == "" or \
