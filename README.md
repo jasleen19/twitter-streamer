@@ -28,9 +28,8 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - `jupyter notebook streamer.ipynb`
 
 ## TO-DO
-### critical
-- Print the total number of links included in the tweets followed by a list of the unique domains sorted by the count. Any shortened links should be expanded
-- Print the number of unique words used in the tweets followed by the list of top 10 words sorted by occurence. Remove the common function words like a, an, the, of, with etc. (articles, pronouns, propositions and conjunctions)
+
+
 ### improvements
 - switch to multiprocessing instead of multithreading
 - remove global variable usage
