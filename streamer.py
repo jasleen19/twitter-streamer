@@ -111,7 +111,7 @@ class Printer():
 durations = {}
 i = 0
 # change this to allow printing frequency (float: in seconds)
-duration = 10.0
+duration = 60.0
 # duration units to go back to
 units = 5
 keyword = ""
