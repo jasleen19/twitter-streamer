@@ -11,6 +11,8 @@ https://nbviewer.jupyter.org/github/jasleen19/twitter-streamer/blob/master/strea
 - pip
 - pip : tweepy
 - pip : tabulate
+- pip : tldextract
+- pip : nltk
 ### optional
 - make
 - jupyter
