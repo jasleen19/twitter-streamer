@@ -57,4 +57,4 @@ Four ways to check the code (`make` and `jupyter` need to be installed for last 
 - https://stackoverflow.com/questions/19130512/stopword-removal-with-nltk
 - https://stackoverflow.com/questions/41610543/corpora-stopwords-not-found-when-import-nltk-library
 - https://stackoverflow.com/questions/24399820/expression-to-remove-url-links-from-twitter-tweet
-- https://stackoverflow.com/questions/38987/how-to-merge-two-dictionaries-in-a-single-expression
+
