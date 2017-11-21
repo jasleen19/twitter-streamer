@@ -28,13 +28,13 @@ class StreamListener(StreamListener):
         '''on_data class_method: handle data by loading into a json and
         appending to global repository of tweets,
         based on minute as index'''
-        global i, durations, total
+        global i, durations
         current_i = i
         tweet_json = loads(data)
         if 'user' in tweet_json:
             # if minute not in `durations` dictionary, add it
-            if i not in durations:
-                durations[i] = {
+            if current_i not in durations:
+                durations[current_i] = {
                     'users': {},
                     'domains': {},
                     'words': {}
@@ -60,7 +60,7 @@ class StreamListener(StreamListener):
         text = re.sub(r"http\S+", "", text)
         text = re.sub(r'[?|$|.|!]',r'', text)
         text = re.sub(r'[^a-zA-Z0-9 ]',r'', text)
-        filtered = [i.lower() for i in wordpunct_tokenize(text) if i.lower() not in self.stop_words]
+        filtered = [j.lower() for j in wordpunct_tokenize(text) if j.lower() not in self.stop_words]
         for word in filtered:
             durations[current_i]['words'][word] = durations[current_i]['words'].get(word, 0) + 1
                                          
@@ -75,7 +75,7 @@ class Printer():
     def printer(self):
         '''printer function: run a self-calling throad to be called every 
         60 seconds on the clock (not equivalent to sleep!)'''
-        global i, keyword, duration, durations, units,domains,total
+        global i, keyword, duration, durations, units,domains
         i = i + 1
         # called every minute; change to 10 seconds to test faster
         Timer(duration, self.printer).start()
